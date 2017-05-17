@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "fitbit-node": "^2.0.5",
     "hapi": "^16.1.1",
     "mongodb": "^2.2.26",
     "mongodb-core": "^2.1.10",

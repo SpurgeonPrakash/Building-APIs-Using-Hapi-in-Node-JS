@@ -1,67 +1,35 @@
 var Hapi = require('hapi');
+var Fitbit = require('fitbit-node');
+
+var client = new Fitbit('', '');
+var redirect_uri = "http://localhost:8080/fitbit_oauth_callback";
+var scope = "activity profile";
 
 var server = new Hapi.Server();
 server.connection({ port: 8080 });
 
-// Create the data store for the test API
-var tasklist = [
-      {
-        "task":"Cook dinner",
-        "owner":"Marga"
-      },
-      {
-        "task":"Run after work",
-        "owner":"Marga"
-      }
-]
+
 
 server.route([
-  // Get ToDo List
+  // Auth callback
   {
     method: 'GET',
-    path: '/api/v1/todolist',
+    path: '/fitbit',
     handler: function(request, reply) {
-       reply(tasklist);
+        reply().redirect( client.getAuthorizeUrl(scope, redirect_uri));
     }
-  },
-
-  {
-    method: 'POST',
-    path: '/api/v1/todolist',
-    handler: function(request, reply) {
-       newTask = {"task":request.payload.task, "owner":request.payload.owner};
-       tasklist.push(newTask);
-       reply(tasklist).code(201);
-    }
-  },
-
-  // Get single task
-  {
+   },
+   {
     method: 'GET',
-    path: '/api/v1/todolist/{index}',
+    path: '/fitbit_oauth_callback',
     handler: function(request, reply) {
-      reply(tasklist[request.params.index-1])
-    }
-  },
-  // Update single task
-  {
-    method: 'PUT',
-    path: '/api/v1/todolist/{index}',
-    handler: function(request, reply) {
-       newTask = {"task":request.payload.task, "owner":request.payload.owner};
-       tasklist[request.params.index-1] = newTask;
-       reply(tasklist);
-    }
-  },
-  {
-    method: 'DELETE',
-    path: '/api/v1/todolist/{index}',
-    handler: function(request, reply) {
-       delete tasklist[request.params.index-1];
-       reply().code(204);
-    }
-  },
-  {
+        client.getAccessToken(request.query.code, redirect_uri).then(function (result) {
+            client.get("/profile.json", result.access_token).then(function(results) {
+                reply(results);
+            })
+        })
+   }},
+   {
     method: 'GET',
     path: '/',
     handler: function(request, reply) {
@@ -69,6 +37,7 @@ server.route([
     }
   }
 ]);
+
 
 
 server.start(function() {

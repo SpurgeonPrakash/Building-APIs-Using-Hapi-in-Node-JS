@@ -1,10 +1,15 @@
 [{
 	"index":1,
-  "task":"Walk the cat",
-  "owner":"Kirsten"
+  	"task":"Cook dinner",
+  	"owner":"Marga"
 },
 {
 	"index":2,
-  "task":"Water the plants",
-  "owner":"Kirsten"
+  	"task":"Run after work",
+  	"owner":"Marga"
+},
+{
+	"index":3,
+  	"task":"Do laundry",
+  	"owner":"Marga"
 }]
