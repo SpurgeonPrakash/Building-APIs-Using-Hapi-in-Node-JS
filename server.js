@@ -1,7 +1,7 @@
 var Hapi = require('hapi');
 var Fitbit = require('fitbit-node');
 
-var client = new Fitbit('', '');
+var client = new Fitbit('', ''); //replace with personal info
 var redirect_uri = "http://localhost:8080/fitbit_oauth_callback";
 var scope = "activity profile";
 
